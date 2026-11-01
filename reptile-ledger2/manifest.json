@@ -1,0 +1,19 @@
+{
+  "name": "「鱗帳」REPTILE LEDGER - 像素爬蟲複式記帳官方網站",
+  "short_name": "鱗帳",
+  "description": "專為愛爬人士與重視財務自律者設計的 8-Bit 像素復古複式記帳離線隱私平台。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#12161a",
+  "theme_color": "#12161a",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

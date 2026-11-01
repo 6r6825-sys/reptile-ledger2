@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="obsidian-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>複式記帳 — 8-Bit 像素記帳系統</title>
+  <meta name="description" content="專為重視財務自律者設計的 8-Bit 像素復古複式記帳網站。支援五大要素會計原則、多借多貸分錄、科目餘額分類帳、資產負債表與跨期損益分析。">
+  <meta name="keywords" content="會計, 記帳, 複式記帳, 像素風, 資產負債表, 損益表, 分類帳">
+  <meta name="author" content="Ledger Team">
+  <meta name="theme-color" content="#12161a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="複式記帳">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- PWA & Mobile Web App Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/pixel-theme.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- App Main Wrapper -->
+  <div class="app-container">
+
+    <!-- Top Header & Mascot Bar -->
+    <header class="header-bar pixel-box">
+      <div class="brand-section">
+        <!-- Pixel Mascot Avatar Box (點擊更換萌寵) -->
+        <div id="chameleon-avatar" class="chameleon-avatar-box" title="點擊更換陪伴萌寵！">
+          <!-- SVG injected via mascots.js -->
+        </div>
+
+        <div class="brand-title-wrapper">
+          <input type="text" id="brand-title-input" class="brand-title-input" placeholder="填寫帳簿名稱..." maxlength="40" title="點擊直接修改帳簿名稱">
+        </div>
+      </div>
+
+      <!-- Controls & Customization: Unified Top-Right Menu -->
+      <div class="header-controls">
+        <button id="btn-open-tools-menu" class="pixel-btn pixel-btn-sm header-menu-btn" title="系統功能選單">
+          ⚙️ 選單
+        </button>
+      </div>
+
+      <!-- Hidden trigger elements for backwards compatibility -->
+      <div style="display:none;" aria-hidden="true">
+        <h1 id="brand-title-text"></h1>
+        <span id="brand-subtitle-custom"></span>
+        <span id="chameleon-status"></span>
+        <div id="brand-clickable-area"></div>
+        <button id="btn-toggle-privacy"></button>
+        <button id="btn-open-mobile-tools"></button>
+        <button id="btn-open-mascot-modal"></button>
+        <button id="btn-edit-branding"></button>
+        <button id="btn-open-tab-order-modal"></button>
+        <button id="btn-open-theme-modal"></button>
+        <button id="btn-toggle-crt"></button>
+        <button id="btn-toggle-sound"></button>
+        <button id="btn-open-settings-modal"></button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs (支援拖曳與個人喜好自由排序) -->
+    <nav class="nav-tabs pixel-box-sm" id="main-nav-tabs">
+      <button class="nav-tab-btn active" data-tab="entry" draggable="true">
+        <span>📝</span> 輸入分錄
+      </button>
+      <button class="nav-tab-btn" data-tab="journal" draggable="true">
+        <span>📖</span> 日記帳
+      </button>
+      <button class="nav-tab-btn" data-tab="balance-sheet" draggable="true">
+        <span>📑</span> 資產負債表
+      </button>
+      <button class="nav-tab-btn" data-tab="cash-flow" draggable="true">
+        <span>🌊</span> 資金流向表
+      </button>
+      <button class="nav-tab-btn" data-tab="comparison" draggable="true">
+        <span>📈</span> 科目跨期比較
+      </button>
+      <button class="nav-tab-btn" data-tab="accounts" draggable="true">
+        <span>🗂️</span> 會計科目
+      </button>
+      <button class="nav-tab-btn" data-tab="favorites" draggable="true">
+        <span>⭐</span> 常用分錄
+      </button>
+    </nav>
+
+    <!-- ========================================================
+         TAB 1: 記帳錄入 (DOUBLE-ENTRY TRANSACTION COMPOSITION)
+         ======================================================== -->
+    <main id="tab-entry" class="tab-content active">
+      <form id="double-entry-form" class="entry-card pixel-box">
+        
+        <!-- Edit Mode Banner (修改分錄時顯示) -->
+        <div id="entry-edit-banner" class="pixel-box-sm" style="display:none; background:var(--bg-card-alt); border-left:4px solid var(--primary); padding:8px 12px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div style="font-family:var(--font-pixel-heading); font-size:12px; color:var(--primary); display:flex; align-items:center; gap:6px;">
+            <span>✏️ 正在修改分錄：</span>
+            <span id="entry-edit-voucher-info" style="color:var(--text-main);"></span>
+          </div>
+          <button type="button" id="btn-cancel-edit" class="pixel-btn pixel-btn-danger pixel-btn-sm" style="min-height:26px; padding:2px 8px; font-size:11px;">
+            ✕ 取消修改
+          </button>
+        </div>
+
+        <!-- Header: Favorite Template & Date & Voucher Memo -->
+        <div class="entry-header-row">
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label" for="entry-quick-fav">⚡ 快速套用常用分錄</label>
+            <select id="entry-quick-fav" class="pixel-select">
+              <option value="">-- 快速套用常用分錄模板 --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entry-date">📅 交易日期</label>
+            <input type="date" id="entry-date" class="pixel-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entry-desc">🏷️ 分錄摘要說明</label>
+            <input type="text" id="entry-desc" class="pixel-input" placeholder="例如：超商採購食物與日用品" required>
+          </div>
+        </div>
+
+        <!-- Compound Double Entry Panels: Debit & Credit -->
+        <div class="compound-grid">
+          
+          <!-- LEFT: 借方 (DEBIT) PANEL -->
+          <div class="side-panel debit-panel pixel-box">
+            <div class="side-header">
+              <div class="side-title debit-title">
+                <span>➕</span> 借方項目 (DEBIT)
+              </div>
+              <button type="button" id="btn-add-debit" class="pixel-btn pixel-btn-sm" title="增加借方科目">
+                + 新增借方
+              </button>
+            </div>
+
+            <!-- Dynamic Debit Legs List -->
+            <div id="debit-legs-list" class="legs-list">
+              <!-- Rendered via ui.js -->
+            </div>
+
+            <div class="side-subtotal">
+              <span>借方小計：</span>
+              <span id="subtotal-debit" class="val" style="color:var(--debit-color)">$0</span>
+            </div>
+          </div>
+
+          <!-- RIGHT: 貸方 (CREDIT) PANEL -->
+          <div class="side-panel credit-panel pixel-box">
+            <div class="side-header">
+              <div class="side-title credit-title">
+                <span>➖</span> 貸方項目 (CREDIT)
+              </div>
+              <button type="button" id="btn-add-credit" class="pixel-btn pixel-btn-sm" title="增加貸方科目">
+                + 新增貸方
+              </button>
+            </div>
+
+            <!-- Dynamic Credit Legs List -->
+            <div id="credit-legs-list" class="legs-list">
+              <!-- Rendered via ui.js -->
+            </div>
+
+            <div class="side-subtotal">
+              <span>貸方小計：</span>
+              <span id="subtotal-credit" class="val" style="color:var(--credit-color)">$0</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Entry Bottom Action Bar (Only save as favorite & submit) -->
+        <div class="balance-check-bar entry-bottom-bar pixel-box-sm">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <label id="entry-save-as-fav-label" style="display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer; user-select:none;">
+              <input type="checkbox" id="entry-save-as-fav">
+              <span>同時存為常用分錄</span>
+            </label>
+            <input type="text" id="entry-fav-custom-name" class="pixel-input" placeholder="常用名稱 (留空預設同分錄摘要)" style="display:none; font-size:12px; padding:4px 8px; width:210px; max-width:100%;">
+          </div>
+
+          <div class="entry-action-buttons">
+            <button type="button" id="btn-cancel-edit-bottom" class="pixel-btn pixel-btn-danger" style="display:none;">
+              ✕ 取消修改
+            </button>
+
+            <button type="submit" id="btn-submit-entry" class="pixel-btn pixel-btn-primary">
+              💾 儲存分錄
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </main>
+
+    <!-- ==========================================
+         TAB 2: 日記帳 (GENERAL JOURNAL)
+         ========================================== -->
+    <section id="tab-journal" class="tab-content">
+      <div class="pixel-box" style="padding:16px;">
+        
+        <!-- Filter Bar -->
+        <div class="table-filter-bar">
+          <div class="filter-group">
+            <label class="form-label">期間：</label>
+            <select id="journal-filter-period" class="pixel-select" style="width:140px;">
+              <option value="this_month">本月</option>
+              <option value="last_month">上月</option>
+              <option value="today">今日</option>
+              <option value="all">全部紀錄</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <input type="text" id="journal-search" class="pixel-input" placeholder="🔍 搜尋憑證、摘要、科目..." style="width:220px;">
+            <button id="btn-export-journal-csv" class="pixel-btn pixel-btn-sm" title="匯出日記帳 CSV">
+              📥 匯出 CSV
+            </button>
+          </div>
+        </div>
+
+        <div id="journal-summary-bar" style="font-family:var(--font-pixel-heading); font-size:11px; padding:10px 0; color:var(--text-muted);">
+          <!-- Populated via ui.js -->
+        </div>
+
+        <!-- Journal Entries Table -->
+        <div class="table-responsive">
+          <table class="pixel-table">
+            <thead>
+              <tr>
+                <th class="journal-date-col">日期</th>
+                <th class="journal-content-col">分錄內容 (借方 / 貸方 / 摘要)</th>
+              </tr>
+            </thead>
+            <tbody id="journal-table-body">
+              <!-- Injected via ui.js -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+
+
+    <!-- ========================================================
+         TAB 5: 資產負債表 (BALANCE SHEET)
+         會計恆等式：資產 = 負債 + 權益
+         ======================================================== -->
+    <section id="tab-balance-sheet" class="tab-content">
+      <div class="balance-sheet-layout">
+        
+        <!-- Exclusion Notice (If any accounts are excluded) -->
+        <div id="bs-exclusion-banner" class="report-exclusion-notice" style="display:none;"></div>
+
+        <!-- 2-Columns Accounting Balance Sheet Grid (資產與負債) -->
+        <div class="bs-columns-grid">
+          
+          <!-- LEFT COLUMN: 資產 (ASSETS) -->
+          <div class="bs-column">
+            <div class="bs-section-box pixel-box">
+              <div class="bs-section-header">
+                <span style="color:var(--debit-color)">💎 資產類項目 (ASSETS - 1xxx)</span>
+                <span>金額</span>
+              </div>
+              <div id="bs-assets-list" style="display:flex; flex-direction:column; gap:4px;">
+                <!-- Injected via ui.js -->
+              </div>
+            </div>
+
+            <!-- Assets Grand Total Row (大總計欄位) -->
+            <div class="bs-grand-total-row pixel-box-sm">
+              <span>資產總計 (Total Assets)：</span>
+              <span id="bs-total-assets-val" style="color:var(--debit-color); font-size:18px;">$0</span>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: 負債 (LIABILITIES) -->
+          <div class="bs-column">
+            
+            <!-- Liabilities Box -->
+            <div class="bs-section-box pixel-box">
+              <div class="bs-section-header">
+                <span style="color:var(--balance-err)">📜 負債類項目 (LIABILITIES - 2xxx)</span>
+                <span>金額</span>
+              </div>
+              <div id="bs-liabilities-list" style="display:flex; flex-direction:column; gap:4px;">
+                <!-- Injected via ui.js -->
+              </div>
+            </div>
+
+            <!-- Liabilities Grand Total Row -->
+            <div class="bs-grand-total-row pixel-box-sm">
+              <span>負債總計 (Total Liabilities)：</span>
+              <span id="bs-total-liab-val" style="color:var(--balance-err); font-size:18px;">$0</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Net Assets Summary Banner -->
+        <div class="bs-grand-total-row pixel-box-sm" style="margin-top:12px; justify-content:space-between; background:var(--bg-card-alt); border-left:4px solid var(--primary); padding:12px 16px;">
+          <span style="font-size:15px; font-weight:bold;">✨ 淨資產淨值 (Net Assets ＝ 資產總計 － 負債總計)：</span>
+          <span id="bs-net-assets-val" style="color:var(--primary); font-size:20px; font-weight:bold;">$0</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 5.5: 資金流向表 (CASH & FUND FLOW STATEMENT)
+         自動由借貸分錄產生，區分內部互轉與信用卡消費/繳款
+         ======================================================== -->
+    <section id="tab-cash-flow" class="tab-content">
+      <div class="cashflow-layout">
+        
+        <!-- Period Filter Bar & Controls -->
+        <div class="table-filter-bar">
+          <div class="filter-group">
+            <label class="form-label">資金計算期間：</label>
+            <select id="cashflow-filter-period" class="pixel-select" style="width:160px;">
+              <option value="this_month">本月 (This Month)</option>
+              <option value="last_month">上月 (Last Month)</option>
+              <option value="this_year">今年累計 (Year-to-Date)</option>
+              <option value="all">歷來全部 (All-Time)</option>
+            </select>
+          </div>
+
+          <div class="filter-group" style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:12px; cursor:pointer; color:var(--text-muted); font-weight:bold;">
+              <input type="checkbox" id="cashflow-include-excluded" style="cursor:pointer; accent-color:var(--primary);">
+              <span>包含不計入報表科目</span>
+            </label>
+            <button type="button" id="btn-print-cashflow" class="pixel-btn pixel-btn-sm" title="列印或另存資金流向表">
+              🖨️ 列印 / 匯出
+            </button>
+          </div>
+        </div>
+
+        <!-- Exclusion Notice (If any accounts are excluded) -->
+        <div id="cashflow-exclusion-banner" class="report-exclusion-notice" style="display:none;"></div>
+
+        <!-- 3 Summary KPI Cards -->
+        <div class="cf-kpi-grid">
+          <div class="cf-kpi-card" style="border-left: 4px solid var(--credit-color)">
+            <span class="cf-kpi-title">🪙 實質總流入 (INFLOW)</span>
+            <span id="cf-kpi-inflow" class="cf-kpi-amount" style="color:var(--credit-color)">$0</span>
+            <span class="cf-kpi-subtitle">薪資、兼職、投資等實質入帳</span>
+          </div>
+
+          <div class="cf-kpi-card" style="border-left: 4px solid var(--debit-color)">
+            <span class="cf-kpi-title">💸 實質總流出 (OUTFLOW)</span>
+            <span id="cf-kpi-outflow" class="cf-kpi-amount" style="color:var(--debit-color)">$0</span>
+            <span class="cf-kpi-subtitle">現金直接支出 ＋ 信用卡刷卡簽帳</span>
+          </div>
+
+          <div class="cf-kpi-card" style="border-left: 4px solid var(--primary)">
+            <span class="cf-kpi-title">⚖️ 淨資金增減 (NET CASH)</span>
+            <span id="cf-kpi-net" class="cf-kpi-amount" style="color:var(--primary)">$0</span>
+            <span id="cf-kpi-net-sub" class="cf-kpi-subtitle">實質資金淨盈餘/赤字</span>
+          </div>
+        </div>
+
+        <!-- Dual Column: 實質流入明細 vs 實質流出明細 -->
+        <div class="cf-split-container">
+          <!-- LEFT: 實質流入 -->
+          <div class="cf-panel">
+            <div class="cf-panel-header">
+              <span style="color:var(--credit-color)">🪙 實質資金流入來源 (INFLOWS)</span>
+              <span id="cf-inflow-count-badge" class="pixel-badge badge-credit">0 筆</span>
+            </div>
+            <div id="cf-inflow-list" style="display:flex; flex-direction:column; gap:8px;">
+              <!-- Populated via ui.js -->
+            </div>
+          </div>
+
+          <!-- RIGHT: 實質流出 -->
+          <div class="cf-panel">
+            <div class="cf-panel-header">
+              <span style="color:var(--debit-color)">💸 實質資金流出項目 (OUTFLOWS)</span>
+              <span id="cf-outflow-count-badge" class="pixel-badge badge-debit">0 筆</span>
+            </div>
+            <div id="cf-outflow-list" style="display:flex; flex-direction:column; gap:8px;">
+              <!-- Populated via ui.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Fund Activity Log Table (簡約 4 欄式，適配 iPhone 14 Pro 無須左右滾動) -->
+        <div class="cf-panel cf-activity-panel">
+          <div class="cf-panel-header">
+            <span>📜 資金動態流水帳明細</span>
+            <span id="cf-activity-count" style="font-size:12px; color:var(--text-muted);">共 0 筆動態</span>
+          </div>
+          <div class="cf-table-wrapper">
+            <table class="pixel-table cf-activity-table">
+              <thead>
+                <tr>
+                  <th style="width:72px;">日期</th>
+                  <th>項目</th>
+                  <th style="width:88px; text-align:center;">支付方式</th>
+                  <th style="text-align:right; width:78px;">金額</th>
+                </tr>
+              </thead>
+              <tbody id="cf-activity-tbody">
+                <!-- Injected via ui.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Credit Card Status Panel (位於最下方) -->
+        <div class="cf-cc-reconcile-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-family:var(--font-pixel-heading); font-size:13px; color:var(--balance-err);">💳 信用卡狀態</span>
+            </div>
+          </div>
+
+          <div class="cf-cc-grid">
+            <div class="cf-cc-stat">
+              <span style="font-size:12px; color:var(--text-muted);">已出帳金額：</span>
+              <strong id="cf-cc-purchases" style="font-family:var(--font-pixel-heading); font-size:16px; color:var(--text-main);">$0</strong>
+            </div>
+            <div class="cf-cc-stat">
+              <span style="font-size:12px; color:var(--text-muted);">未出帳金額：</span>
+              <strong id="cf-cc-balance" style="font-family:var(--font-pixel-heading); font-size:16px; color:var(--balance-err);">$0</strong>
+            </div>
+            <div class="cf-cc-stat">
+              <span style="font-size:12px; color:var(--text-muted);">本期已扣繳金額：</span>
+              <strong id="cf-cc-payments" style="font-family:var(--font-pixel-heading); font-size:16px; color:var(--debit-color);">$0</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 6: 科目跨期比較分析 (雙期精準對比)
+         ========================================== -->
+    <section id="tab-comparison" class="tab-content">
+      <div class="pixel-box" style="padding:16px; display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- Controls: Two Periods (A vs B) -->
+        <div class="table-filter-bar">
+          <div class="filter-group">
+            <label class="form-label">期間 A：</label>
+            <select id="comp-period-a" class="pixel-select" style="min-width:130px;">
+              <option value="this_month" selected>本月</option>
+              <option value="last_month">上月</option>
+              <option value="this_year">今年</option>
+              <option value="last_year">去年</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="form-label">期間 B (對比基準)：</label>
+            <select id="comp-period-b" class="pixel-select" style="min-width:130px;">
+              <option value="last_month" selected>上月</option>
+              <option value="this_month">本月</option>
+              <option value="this_year">今年</option>
+              <option value="last_year">去年</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Two-Period Visual Comparison Boxes -->
+        <div id="comp-chart-canvas">
+          <!-- Rendered via ui.js -->
+        </div>
+
+        <!-- Detailed Comparison Data Table (Side-by-side) -->
+        <div id="comp-details-table" class="table-responsive">
+          <!-- Rendered via ui.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 6: 會計科目管理 (CHART OF ACCOUNTS)
+         ======================================================== -->
+    <section id="tab-accounts" class="tab-content">
+      
+      <!-- SUB-VIEW 1: 會計科目總覽與餘額 (ACCOUNTS LIST OVERVIEW) -->
+      <div id="accounts-overview-view" style="display:flex; flex-direction:column; gap:16px;">
+        <div class="table-filter-bar">
+          <div>
+            <h3 style="font-family:var(--font-pixel-heading); font-size:12px;">會計要素與自訂科目</h3>
+            <p style="font-size:14px; color:var(--text-muted); margin-top:2px;">
+              依照標準會計原則分類：資產(1xxx)、負債(2xxx)、收入(4xxx)、費用(5xxx)。點選科目名稱即可查閱明細分類帳！
+            </p>
+          </div>
+          <button type="button" id="btn-open-add-account-modal" class="pixel-btn pixel-btn-primary pixel-btn-sm">
+            ➕ 新增會計科目
+          </button>
+        </div>
+
+        <!-- Accounts Container -->
+        <div id="accounts-list-container">
+          <!-- Injected via ui.js -->
+        </div>
+      </div>
+
+      <!-- SUB-VIEW 2: 單一科目明細分類帳 (ACCOUNT DETAILS DRILLDOWN) -->
+      <div id="accounts-ledger-view" class="pixel-box" style="padding:16px; display:none; flex-direction:column; gap:16px;">
+        <!-- Breadcrumb & Switcher Header -->
+        <div class="ledger-drilldown-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button type="button" id="btn-back-to-accounts-overview" class="pixel-btn pixel-btn-sm pixel-btn-primary">
+              ⬅️ 返回會計科目列表
+            </button>
+            <span style="font-family:var(--font-pixel-heading); font-size:11px; color:var(--text-muted)">/ 科目明細分類帳</span>
+          </div>
+
+          <div class="filter-group">
+            <label class="form-label">切換科目：</label>
+            <select id="ledger-select-account" class="pixel-select" style="width:260px;">
+              <!-- Populated via ui.js -->
+            </select>
+
+            <label class="form-label">明細期間：</label>
+            <select id="ledger-filter-period" class="pixel-select" style="width:140px;">
+              <option value="this_month">本月</option>
+              <option value="last_month">上月</option>
+              <option value="all">歷來全部</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Selected Account Meta Banner -->
+        <div id="ledger-account-meta" class="pixel-box-sm" style="padding:12px; background-color:var(--bg-card-alt)">
+          <!-- Injected via ui.js -->
+        </div>
+
+        <!-- Ledger Table with Running Balance -->
+        <div class="table-responsive">
+          <table class="pixel-table">
+            <thead>
+              <tr>
+                <th style="width:110px; white-space:nowrap;">日期</th>
+                <th style="width:65px; text-align:center; white-space:nowrap;">憑證</th>
+                <th>交易摘要與備註</th>
+                <th style="width:130px; text-align:right;">借方金額</th>
+                <th style="width:130px; text-align:right;">貸方金額</th>
+                <th style="width:65px; text-align:center;">借/貸</th>
+                <th style="width:145px; text-align:right;">累計餘額 (BALANCE)</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-table-body">
+              <!-- Injected via ui.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================
+         TAB 7: 常用分錄 (FAVORITE PRESETS)
+         ======================================================== -->
+    <section id="tab-favorites" class="tab-content">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        
+        <div class="table-filter-bar">
+          <div>
+            <h3 style="font-family:var(--font-pixel-heading); font-size:12px;">⭐ 常用分錄快速模板庫</h3>
+            <p style="font-size:14px; color:var(--text-muted); margin-top:2px;">
+              預先設定複合借貸分錄（如薪水入帳、刷卡採購、繳納水電），一鍵套用填寫！
+            </p>
+          </div>
+          <button type="button" id="btn-open-add-preset-modal" class="pixel-btn pixel-btn-primary pixel-btn-sm">
+            ➕ 新增常用分錄
+          </button>
+        </div>
+
+        <!-- Favorite Presets Cards -->
+        <div id="presets-cards-container" class="presets-grid">
+          <!-- Injected via ui.js -->
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ========================================================
+       MODAL 1: 配色主題切換 (REPTILE THEMES)
+       ======================================================== -->
+  <div id="modal-theme-picker" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🎨 選擇皮膚與主題配色</h3>
+        <button id="btn-close-theme-modal" class="pixel-btn pixel-btn-sm">✕</button>
+      </div>
+
+      <p style="font-size:14px; color:var(--text-muted);">
+        特別提供多款高質感「古籍莎草」風格的淺色紙質配色，與深邃黑底復古配色供您自由切換！
+      </p>
+
+      <!-- Section: 淺色沙草與淡彩風 -->
+      <div class="theme-category-title">
+        <span>📜 淺色沙草與淡彩和紙風（LIGHT & PARCHMENT）</span>
+      </div>
+
+      <div class="theme-picker-grid">
+        <!-- 1. Retro Light (預設白底 - 復古羊皮紙) -->
+        <div class="theme-card" data-theme-name="retro-light">
+          <strong class="theme-title">古籍莎草 (預設白底)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#f5f4ed;"></span>
+            <span class="swatch" style="background:#1b7f3b;"></span>
+            <span class="swatch" style="background:#0969da;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">經典羊皮紙高對比墨綠</span>
+        </div>
+
+        <!-- 2. Hatchling Cream (初孵淡彩 / 奶油暖沙) -->
+        <div class="theme-card" data-theme-name="hatchling-cream">
+          <strong class="theme-title">初孵淡彩 (奶油暖沙)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#faf6ee;"></span>
+            <span class="swatch" style="background:#d48b28;"></span>
+            <span class="swatch" style="background:#4a8275;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">溫潤奶茶米白・焦糖色</span>
+        </div>
+
+        <!-- 3. Mossy Stone (青苔石階 / 草木苔白) -->
+        <div class="theme-card" data-theme-name="mossy-stone">
+          <strong class="theme-title">青苔石階 (草木苔白)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#f0f4ef;"></span>
+            <span class="swatch" style="background:#2d7a46;"></span>
+            <span class="swatch" style="background:#2b6cb0;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">淡雅林下石階・若竹青</span>
+        </div>
+
+        <!-- 4. Dawn Desert (朝霞沙漠 / 暖杏珊瑚) -->
+        <div class="theme-card" data-theme-name="dawn-desert">
+          <strong class="theme-title">朝霞沙漠 (暖杏珊瑚)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#fcf4ee;"></span>
+            <span class="swatch" style="background:#c85a32;"></span>
+            <span class="swatch" style="background:#d69e2e;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">晨曦暖杏沙・赤陶珊瑚</span>
+        </div>
+
+        <!-- 5. Mint Ice (薄荷冰蜥 / 復古掌機淡青) -->
+        <div class="theme-card" data-theme-name="mint-ice">
+          <strong class="theme-title">薄荷冰蜥 (復古掌機)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#eef7f4;"></span>
+            <span class="swatch" style="background:#19876e;"></span>
+            <span class="swatch" style="background:#234e52;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">經典GameBoy LCD淡青白</span>
+        </div>
+
+        <!-- 6. Wisteria Mist (紫藤晨霧 / 淺紫和紙) -->
+        <div class="theme-card" data-theme-name="wisteria-mist">
+          <strong class="theme-title">紫藤晨霧 (淺紫和紙)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#f5f2f9;"></span>
+            <span class="swatch" style="background:#6b46c1;"></span>
+            <span class="swatch" style="background:#4a5568;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">優雅薰衣草灰白紙質</span>
+        </div>
+
+        <!-- 7. Chick Yellow (小雞黃 / 雛鳥暖沙) -->
+        <div class="theme-card" data-theme-name="chick-yellow">
+          <strong class="theme-title">小雞黃 (雛鳥暖沙)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#fdf9e8;"></span>
+            <span class="swatch" style="background:#e29b00;"></span>
+            <span class="swatch" style="background:#e66737;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">明亮溫暖萌雛黃・日系溫柔</span>
+        </div>
+
+        <!-- 8. Retro Pink (復古粉 / 櫻咲草莓) -->
+        <div class="theme-card" data-theme-name="retro-pink">
+          <strong class="theme-title">復古粉 (草莓像素)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#fbf2f4;"></span>
+            <span class="swatch" style="background:#c9406f;"></span>
+            <span class="swatch" style="background:#3b7e8c;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">經典復古粉紅・草莓落櫻</span>
+        </div>
+
+        <!-- 9. Monochrome B&W (水墨黑白 / 經典黑白配) -->
+        <div class="theme-card" data-theme-name="monochrome-bw">
+          <strong class="theme-title">水墨黑白 (經典黑白配)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#ffffff; border:1px solid #111;"></span>
+            <span class="swatch" style="background:#111111;"></span>
+            <span class="swatch" style="background:#666666;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">1-Bit 極簡黑白・高對比水墨漫畫</span>
+        </div>
+      </div>
+
+      <!-- Section: 深色與酷炫賽博風 -->
+      <div class="theme-category-title" style="margin-top:16px;">
+        <span>🌑 深色酷炫與夜行風（DARK & CYBER）</span>
+      </div>
+
+      <div class="theme-picker-grid">
+        <!-- 9. Obsidian Dark (預設黑底) -->
+        <div class="theme-card active" data-theme-name="obsidian-dark">
+          <strong class="theme-title">黑曜巨蜥 (預設黑底)</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#0c0f12;"></span>
+            <span class="swatch" style="background:#39d353;"></span>
+            <span class="swatch" style="background:#58a6ff;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">深邃黑底像素風格</span>
+        </div>
+
+        <!-- 10. Chameleon Green -->
+        <div class="theme-card" data-theme-name="chameleon-green">
+          <strong class="theme-title">翡翠變色龍</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#06190f;"></span>
+            <span class="swatch" style="background:#00ff73;"></span>
+            <span class="swatch" style="background:#00e1d9;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">熱帶雨林螢光翠綠</span>
+        </div>
+
+        <!-- 11. Desert Gecko -->
+        <div class="theme-card" data-theme-name="desert-gecko">
+          <strong class="theme-title">沙漠守宮</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#1f170f;"></span>
+            <span class="swatch" style="background:#f5a623;"></span>
+            <span class="swatch" style="background:#48c78e;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">暖沙琥珀守宮配色</span>
+        </div>
+
+        <!-- 12. Poison Dart Frog -->
+        <div class="theme-card" data-theme-name="poison-frog">
+          <strong class="theme-title">霓虹毒蛙</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#12091f;"></span>
+            <span class="swatch" style="background:#00ffff;"></span>
+            <span class="swatch" style="background:#ff007f;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">迷幻賽博霓虹紫青</span>
+        </div>
+
+        <!-- 13. Magma Lizard -->
+        <div class="theme-card" data-theme-name="magma-lizard">
+          <strong class="theme-title">熔岩巨蜥</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#180d0d;"></span>
+            <span class="swatch" style="background:#ff4d2e;"></span>
+            <span class="swatch" style="background:#ffa600;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">黑曜石岩漿赤炎配色</span>
+        </div>
+      </div>
+
+      <!-- Section: 節慶限定主題 (附左上角萌寵專屬節日配飾) -->
+      <div class="theme-category-title" style="margin-top:16px;">
+        <span>🎉 節慶限定像素主題（FESTIVE HOLIDAY THEMES・萌寵配飾與專屬色彩變化）</span>
+      </div>
+
+      <div class="theme-picker-grid">
+        <!-- 14. Halloween (萬聖南瓜夜 - 深色魅紫) -->
+        <div class="theme-card" data-theme-name="halloween">
+          <strong class="theme-title">萬聖南瓜夜 🎃</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#130a22;"></span>
+            <span class="swatch" style="background:#ff7518;"></span>
+            <span class="swatch" style="background:#76ff03;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">深紫幽冥夜・尖頂女巫帽配飾</span>
+        </div>
+
+        <!-- 15. Christmas (聖誕雪松 - 幽邃松夜) -->
+        <div class="theme-card" data-theme-name="christmas">
+          <strong class="theme-title">聖誕雪松 🎅</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#091710;"></span>
+            <span class="swatch" style="background:#ef4444;"></span>
+            <span class="swatch" style="background:#22c55e;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">深冷杉翠夜・毛絨聖誕帽配飾</span>
+        </div>
+
+        <!-- 16. Spring Festival (新春吉慶 - 宮廷金赤) -->
+        <div class="theme-card" data-theme-name="spring-festival">
+          <strong class="theme-title">新春吉慶 🧧</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#140507;"></span>
+            <span class="swatch" style="background:#ff384c;"></span>
+            <span class="swatch" style="background:#fbbf24;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">宮廷金絳夜・吉祥財神雙翼冠</span>
+        </div>
+
+        <!-- 17. Mid-Autumn (中秋月夜 - 深色月夜) -->
+        <div class="theme-card" data-theme-name="mid-autumn">
+          <strong class="theme-title">中秋月夜 🥮</strong>
+          <div class="theme-color-swatches">
+            <span class="swatch" style="background:#0a1124;"></span>
+            <span class="swatch" style="background:#fbc02d;"></span>
+            <span class="swatch" style="background:#81d4fa;"></span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted)">滿月金桂夜空・玉兔雙耳飾</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: 更換陪伴萌寵 (MASCOT PICKER 全 20 款)
+       ======================================================== -->
+  <div id="modal-mascot-picker" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🐾 選擇陪伴萌寵 (全 50 款・各類 10 種滿載)</h3>
+        <button id="btn-close-mascot-modal" class="pixel-btn pixel-btn-sm">✕</button>
+      </div>
+
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom: 8px;">
+        選擇您喜愛的陪伴萌寵！無論是爬蟲守宮、毛絨狗狗、溫暖貓咪、鸚鵡猛禽或倉鼠小寵，牠都將駐守在系統左上角，為您的每筆分錄監督借貸平衡：
+      </p>
+
+      <!-- Category Filter Tabs -->
+      <div class="mascot-filter-tabs" id="mascot-filter-tabs">
+        <button type="button" class="pixel-btn pixel-btn-sm active mascot-filter-btn" data-cat="all">全部 (50)</button>
+        <button type="button" class="pixel-btn pixel-btn-sm mascot-filter-btn" data-cat="reptile">🦎 爬蟲兩棲 (10)</button>
+        <button type="button" class="pixel-btn pixel-btn-sm mascot-filter-btn" data-cat="dog">🐶 狗狗 (10)</button>
+        <button type="button" class="pixel-btn pixel-btn-sm mascot-filter-btn" data-cat="cat">🐱 貓咪 (10)</button>
+        <button type="button" class="pixel-btn pixel-btn-sm mascot-filter-btn" data-cat="bird">🦜 鳥禽猛禽 (10)</button>
+        <button type="button" class="pixel-btn pixel-btn-sm mascot-filter-btn" data-cat="small-pet">🐹 倉鼠小寵 (10)</button>
+      </div>
+
+      <div id="mascot-picker-list" class="mascots-list-container">
+        <!-- Injected via ui.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 3: 自訂店名與副標題 (CUSTOM BRANDING)
+       ======================================================== -->
+  <div id="modal-edit-branding" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box">
+      <div class="modal-header">
+        <h3 class="modal-title">✏️ 自訂帳簿名稱與副標題</h3>
+        <button id="btn-close-branding-modal" class="pixel-btn pixel-btn-sm">✕</button>
+      </div>
+
+      <form id="form-edit-branding" style="display:flex; flex-direction:column; gap:14px;">
+        <div class="form-group">
+          <label class="form-label" for="input-brand-title">系統主名稱（帳簿名稱）：</label>
+          <input type="text" id="input-brand-title" class="pixel-input" placeholder="例如：我的帳簿、個人記帳本" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-brand-subtitle">副標題文字（座右銘 / 註解）：</label>
+          <input type="text" id="input-brand-subtitle" class="pixel-input" placeholder="例如：8-BIT 複式記帳系統、守宮生活財務簿" required>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+          <button type="button" id="btn-reset-branding-default" class="pixel-btn pixel-btn-sm">🔄 恢復預設名稱</button>
+          <button type="submit" class="pixel-btn pixel-btn-primary">確認儲存名稱</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: 新增/編輯會計科目 (ADD / EDIT ACCOUNT)
+       ======================================================== -->
+  <div id="modal-add-account" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-account-title">➕ 新增會計科目</h3>
+        <button id="btn-close-account-modal" class="pixel-btn pixel-btn-sm">✕</button>
+      </div>
+
+      <form id="form-add-account" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="acc-edit-id" value="">
+        <input type="hidden" id="acc-parent-id" value="">
+        <div id="sub-acc-parent-info" style="display:none; font-size:13px; color:var(--primary); padding:6px 10px; background:var(--bg-card-alt); border-left:3px solid var(--primary); margin-bottom:8px;"></div>
+        <div class="form-group" id="group-acc-category">
+          <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>會計要素大類 (ALRE)：</span>
+            <span id="acc-cat-current-hint" style="font-size:12px; color:var(--primary); font-weight:bold;">A・資產 (1xxx 借)</span>
+          </label>
+          <input type="hidden" id="acc-category" value="asset" required>
+          <div class="alcre-btn-group" id="acc-category-buttons">
+            <button type="button" class="pixel-btn alcre-btn active" data-category="asset" title="A - 資產 (Asset) 1xxx [正常方向: 借方]">
+              <span class="alcre-letter">A</span>
+              <span class="alcre-name">資產</span>
+            </button>
+            <button type="button" class="pixel-btn alcre-btn" data-category="liability" title="L - 負債 (Liability) 2xxx [正常方向: 貸方]">
+              <span class="alcre-letter">L</span>
+              <span class="alcre-name">負債</span>
+            </button>
+            <button type="button" class="pixel-btn alcre-btn" data-category="revenue" title="R - 收入 (Revenue) 4xxx [正常方向: 貸方]">
+              <span class="alcre-letter">R</span>
+              <span class="alcre-name">收入</span>
+            </button>
+            <button type="button" class="pixel-btn alcre-btn" data-category="expense" title="E - 費用 (Expense) 5xxx [正常方向: 借方]">
+              <span class="alcre-letter">E</span>
+              <span class="alcre-name">費用</span>
+            </button>
+          </div>
+          <div id="acc-category-desc-box" class="alcre-desc-banner pixel-box-sm">
+            <span>💎 <strong>[A] 資產</strong> (1xxx)</span>
+            <span style="font-weight:bold; color:var(--text-muted);">正常方向：借方 (Debit)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="acc-code">科目代號：</label>
+          <input type="text" id="acc-code" class="pixel-input" placeholder="例如：5109 或 1101-01" maxlength="12" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="acc-name">科目名稱：</label>
+          <input type="text" id="acc-name" class="pixel-input" placeholder="例如：爬蟲飼育維他命費" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="acc-initial-balance">期初餘額 ($)：</label>
+          <input type="number" id="acc-initial-balance" class="pixel-input" placeholder="0" min="0" step="any" value="0">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="acc-desc">科目說明 / 備註：</label>
+          <input type="text" id="acc-desc" class="pixel-input" placeholder="說明此科目的用途與包含範疇">
+        </div>
+
+        <div class="form-group" style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--bg-card-alt); border-radius:4px; border:1px solid var(--border-color); margin-top:2px;">
+          <input type="checkbox" id="acc-exclude-reports" style="width:18px; height:18px; margin-top:2px; cursor:pointer; accent-color:var(--primary);">
+          <label for="acc-exclude-reports" style="cursor:pointer; font-size:13px; font-weight:bold; margin-bottom:0; display:flex; flex-direction:column; gap:3px;">
+            <span style="color:var(--text-main); font-family:var(--font-pixel-heading); font-size:11px;">🚫 科目金額不計入報表</span>
+            <span style="font-size:12px; font-weight:normal; color:var(--text-muted); line-height:1.4;">
+              勾選後，此科目金額不計入損益表、資產負債表與資金流向表（適合代墊款、非實質收支或暫記帳戶）。
+            </span>
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="submit" id="btn-submit-account" class="pixel-btn pixel-btn-primary">確認建立科目</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 5: 自訂分頁順序 (TAB ORDER REORDER)
+       ======================================================== -->
+  <div id="modal-tab-order" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box" style="max-width:500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ 自訂導覽分頁順序</h3>
+        <button id="btn-close-tab-order-modal" class="pixel-btn pixel-btn-sm">✕</button>
+      </div>
+
+      <p style="font-size:14px; color:var(--text-muted);">
+        您可以直接在上方分頁列<strong>按住滑鼠拖曳（Drag & Drop）</strong>更換順序，或使用下方 ⬆️ / ⬇️ 按鈕調整：
+      </p>
+
+      <div id="tab-order-list-container" class="tab-order-list">
+        <!-- Injected via ui.js -->
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed var(--border-color); padding-top:10px;">
+        <button type="button" id="btn-reset-tab-order" class="pixel-btn pixel-btn-sm">
+          🔄 還原預設順序
+        </button>
+        <button type="button" id="btn-confirm-tab-order" class="pixel-btn pixel-btn-primary pixel-btn-sm">
+          ✓ 完成
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 6: 資料備份與管理 (BACKUP & RESTORE)
+       ======================================================== -->
+  <div id="modal-settings" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box">
+      <div class="modal-header">
+        <h3 class="modal-title">💾 記帳資料備份與管理</h3>
+        <button id="btn-close-settings-modal" class="pixel-btn pixel-btn-sm">✕</button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div class="pixel-box-sm" style="padding:12px;">
+          <h4 style="font-family:var(--font-pixel-heading); font-size:11px; margin-bottom:6px;">匯出完整資料 (JSON)</h4>
+          <p style="font-size:14px; color:var(--text-muted); margin-bottom:8px;">
+            包含全部會計科目、交易分錄、常用分錄與偏好設定，儲存為離線檔案備份。
+          </p>
+          <button id="btn-backup-export" class="pixel-btn pixel-btn-primary pixel-btn-sm">
+            📤 下載備份 JSON
+          </button>
+        </div>
+
+        <div class="pixel-box-sm" style="padding:12px;">
+          <h4 style="font-family:var(--font-pixel-heading); font-size:11px; margin-bottom:6px;">匯入還原資料 (JSON)</h4>
+          <p style="font-size:14px; color:var(--text-muted); margin-bottom:8px;">
+            讀取先前匯出的備份檔案，完整還原所有資料。
+          </p>
+          <input type="file" id="input-backup-file" accept=".json" class="pixel-input" style="font-size:14px;">
+        </div>
+
+        <div class="pixel-box-sm" style="padding:12px; border-color:var(--balance-err)">
+          <h4 style="font-family:var(--font-pixel-heading); font-size:11px; margin-bottom:6px; color:var(--balance-err)">重置為爬蟲主題範例資料</h4>
+          <p style="font-size:14px; color:var(--text-muted); margin-bottom:8px;">
+            一鍵重設為包含數個月真實跨期分錄、五大科目與常用分錄的初始展示狀態。
+          </p>
+          <button id="btn-reset-demo" class="pixel-btn pixel-btn-danger pixel-btn-sm">
+            ⚠️ 重置為範例資料
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 7: 點選分頁切換列表 (MOBILE BOTTOM SHEET TAB PICKER)
+       ======================================================== -->
+  <div id="modal-tab-picker" class="modal-overlay sheet-overlay" style="display:none;">
+    <div class="bottom-sheet-content pixel-box">
+      <div class="sheet-handle-bar"></div>
+      <div class="modal-header">
+        <h3 class="modal-title">📋 點選分頁列表</h3>
+        <button id="btn-close-tab-picker" class="pixel-btn pixel-btn-sm" type="button">✕</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin:0;">
+        輕點下方列表立即切換記帳與報表分頁：
+      </p>
+      <div id="tab-picker-list-items" class="tab-picker-list">
+        <!-- Rendered via ui.js with clean touch rows -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 8: 行動端系統功能選單 (MOBILE QUICK TOOLS)
+       ======================================================== -->
+  <div id="modal-quick-menu" class="modal-overlay sheet-overlay" style="display:none;">
+    <div class="bottom-sheet-content pixel-box">
+      <div class="sheet-handle-bar"></div>
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ 系統設定與工具</h3>
+        <button id="btn-close-quick-menu" class="pixel-btn pixel-btn-sm" type="button">✕</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-muted); margin:0 0 4px 0;">
+        💡 提示：手機螢幕左側向右滑動，即可隨時返回上一頁或關閉選單！
+      </p>
+      <div class="quick-menu-grid">
+        <button id="btn-qm-privacy" class="pixel-btn" type="button"><span class="qm-icon">👁️</span> 隱私防窺</button>
+        <button id="btn-qm-theme" class="pixel-btn" type="button"><span class="qm-icon">🎨</span> 配色主題</button>
+        <button id="btn-qm-mascot" class="pixel-btn" type="button"><span class="qm-icon">🐾</span> 更換萌寵</button>
+        <button id="btn-qm-brand" class="pixel-btn" type="button"><span class="qm-icon">✏️</span> 帳簿名稱</button>
+        <button id="btn-qm-tab-order" class="pixel-btn" type="button"><span class="qm-icon">↕️</span> 排序分頁</button>
+        <button id="btn-qm-sound" class="pixel-btn" type="button"><span class="qm-icon">🔊</span> 8-Bit音效</button>
+        <button id="btn-qm-crt" class="pixel-btn" type="button"><span class="qm-icon">📺</span> CRT掃描線</button>
+        <button id="btn-qm-backup" class="pixel-btn" type="button"><span class="qm-icon">💾</span> 備份還原</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 9: 新增/編輯常用分錄模板 (EDIT FAVORITE PRESET)
+       ======================================================== -->
+  <div id="modal-edit-preset" class="modal-overlay" style="display:none;">
+    <div class="modal-content pixel-box" style="max-width:560px; max-height:90vh; overflow-y:auto;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-preset-title">⭐ 常用分錄模板設定</h3>
+        <button id="btn-close-preset-modal" class="pixel-btn pixel-btn-sm" type="button">✕</button>
+      </div>
+      <form id="form-edit-preset" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="preset-edit-id" value="">
+        <div style="display:grid; grid-template-columns: 80px 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label" for="preset-icon">圖示</label>
+            <input type="text" id="preset-icon" class="pixel-input" value="🦎" maxlength="2" style="text-align:center;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="preset-name">模板名稱</label>
+            <input type="text" id="preset-name" class="pixel-input" placeholder="例如：超商零食或日用品" required>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label" for="preset-category">分類標籤</label>
+            <input type="text" id="preset-category" class="pixel-input" placeholder="例如：伙食、守宮、水電">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="preset-desc">預設摘要說明</label>
+            <input type="text" id="preset-desc" class="pixel-input" placeholder="例如：超商食物日用品採購">
+          </div>
+        </div>
+
+        <!-- Preset Legs Config (支援多筆借方與貸方) -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label class="form-label" style="margin:0; font-weight:bold;">借貸科目配置 (支援多借多貸)：</label>
+            <span style="font-size:11px; color:var(--text-muted);">金額可填寫或留空</span>
+          </div>
+
+          <!-- Debit Legs Section -->
+          <div class="preset-legs-group" style="border:1px solid rgba(235,87,87,0.35); padding:10px; border-radius:4px; background:rgba(235,87,87,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="color:var(--debit-color); font-weight:bold; font-size:12px;">➕ 借方科目 (Debit)</span>
+              <button type="button" id="btn-add-preset-debit" class="pixel-btn pixel-btn-sm" style="font-size:11px; padding:3px 8px;">+ 新增借方</button>
+            </div>
+            <div id="preset-debit-legs-container" style="display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+
+          <!-- Credit Legs Section -->
+          <div class="preset-legs-group" style="border:1px solid rgba(39,174,96,0.35); padding:10px; border-radius:4px; background:rgba(39,174,96,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="color:var(--credit-color); font-weight:bold; font-size:12px;">➖ 貸方科目 (Credit)</span>
+              <button type="button" id="btn-add-preset-credit" class="pixel-btn pixel-btn-sm" style="font-size:11px; padding:3px 8px;">+ 新增貸方</button>
+            </div>
+            <div id="preset-credit-legs-container" style="display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="submit" class="pixel-btn pixel-btn-primary">確認儲存常用分錄</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 10: 像素金額數字鍵盤 (RETRO PIXEL NUMERIC KEYPAD)
+       ======================================================== -->
+  <div id="modal-pixel-keypad" class="modal-overlay pixel-keypad-overlay" style="display:none;">
+    <div class="modal-content pixel-box pixel-keypad-modal">
+      <div class="modal-header pixel-keypad-header">
+        <div class="pixel-keypad-title-wrap">
+          <span class="pixel-keypad-badge badge-debit" id="keypad-side-badge">借方</span>
+          <h3 class="modal-title" id="keypad-modal-title">🔢 像素金額鍵盤</h3>
+        </div>
+        <button type="button" id="btn-close-keypad" class="pixel-btn pixel-btn-sm" title="關閉 (Esc)">✕</button>
+      </div>
+
+      <!-- Account Info & Balance Hint -->
+      <div class="keypad-account-info">
+        <div class="keypad-acc-name-wrap">
+          <span style="font-size:11px; color:var(--text-muted);">科目：</span>
+          <span class="keypad-acc-name" id="keypad-acc-label">【現金】</span>
+        </div>
+        <div class="keypad-balance-hint" id="keypad-balance-hint">差額：$0</div>
+      </div>
+
+      <!-- LCD Display Screen -->
+      <div class="keypad-screen pixel-box-sm">
+        <div class="keypad-formula" id="keypad-formula">&nbsp;</div>
+        <div class="keypad-display-row">
+          <span class="keypad-currency">$</span>
+          <span class="keypad-value" id="keypad-display-val">0</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Bar -->
+      <div class="keypad-quick-actions">
+        <button type="button" class="pixel-btn pixel-btn-sm keypad-btn-quick" id="btn-keypad-balance" title="自動填入平衡借貸所需的差額">
+          ⚖️ 平衡差額
+        </button>
+        <button type="button" class="pixel-btn pixel-btn-sm keypad-btn-quick btn-keypad-add" data-add="100">+100</button>
+        <button type="button" class="pixel-btn pixel-btn-sm keypad-btn-quick btn-keypad-add" data-add="500">+500</button>
+        <button type="button" class="pixel-btn pixel-btn-sm keypad-btn-quick btn-keypad-add" data-add="1000">+1K</button>
+        <button type="button" class="pixel-btn pixel-btn-sm keypad-btn-quick btn-keypad-add" data-add="10000">+10K</button>
+      </div>
+
+      <!-- Keypad Grid (Calculator Style) -->
+      <div class="keypad-grid">
+        <button type="button" class="keypad-key keypad-key-fn" data-action="clear">C</button>
+        <button type="button" class="keypad-key keypad-key-op" data-action="op" data-val="/">÷</button>
+        <button type="button" class="keypad-key keypad-key-op" data-action="op" data-val="*">×</button>
+        <button type="button" class="keypad-key keypad-key-fn" data-action="backspace">⌫</button>
+
+        <button type="button" class="keypad-key" data-action="num" data-val="7">7</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="8">8</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="9">9</button>
+        <button type="button" class="keypad-key keypad-key-op" data-action="op" data-val="-">-</button>
+
+        <button type="button" class="keypad-key" data-action="num" data-val="4">4</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="5">5</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="6">6</button>
+        <button type="button" class="keypad-key keypad-key-op" data-action="op" data-val="+">+</button>
+
+        <button type="button" class="keypad-key" data-action="num" data-val="1">1</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="2">2</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="3">3</button>
+        <button type="button" class="keypad-key keypad-key-eval" data-action="eval">=</button>
+
+        <button type="button" class="keypad-key" data-action="num" data-val="0">0</button>
+        <button type="button" class="keypad-key" data-action="num" data-val="00">00</button>
+        <button type="button" class="keypad-key" data-action="dot">.</button>
+        <button type="button" class="keypad-key keypad-key-confirm pixel-btn-primary" data-action="confirm">確認 ✓</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ========================================================
+       FIXED MOBILE BOTTOM NAVIGATION BAR: 點選列表式導覽列
+       ======================================================== -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <button type="button" class="bottom-tab-arrow-btn" id="btn-prev-tab" title="上一個分頁">◀</button>
+    <button type="button" class="bottom-tab-picker-trigger" id="btn-open-tab-picker" title="點選展開分頁列表">
+      <span class="picker-current-icon" id="bottom-active-icon">📝</span>
+      <span class="picker-current-name" id="bottom-active-name">輸入分錄</span>
+      <span class="picker-arrow">▾ 點選列表</span>
+    </button>
+    <button type="button" class="bottom-tab-arrow-btn" id="btn-next-tab" title="下一個分頁">▶</button>
+  </nav>
+
+  <!-- Mobile Swipe Back Gesture Indicator (手機滑動回上一頁 8-Bit 像素反饋動態指示器) -->
+  <div id="swipe-back-edge-glow" class="swipe-back-edge-glow" aria-hidden="true"></div>
+  <div id="swipe-back-indicator" class="swipe-back-indicator" aria-hidden="true">
+    <div class="swipe-indicator-arrow-box">
+      <span class="swipe-indicator-arrow">◀</span>
+    </div>
+    <div class="swipe-indicator-content">
+      <span class="swipe-indicator-action" id="swipe-action-label">滑動返回</span>
+      <span class="swipe-indicator-target" id="swipe-target-label">上一頁</span>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ========================================================
+       APPLICATION SCRIPTS
+       ======================================================== -->
+  <script src="js/audio.js"></script>
+  <script src="js/models.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/accounting.js"></script>
+  <script src="js/mascots.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

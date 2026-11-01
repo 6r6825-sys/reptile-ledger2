@@ -1,0 +1,1101 @@
+/* ==========================================================================
+   REPTILE PIXEL ACCOUNTING (鱗帳) - RETRO PIXEL DESIGN SYSTEM & COLOR THEMES
+   ========================================================================== */
+
+/* Google Fonts: Retro 8-bit font & clean pixel-friendly monospace */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap');
+
+:root {
+  /* Modern clean typography with retro accents, tailored for iPhone & high-DPI displays */
+  --font-pixel-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-pixel-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-retro-accent: 'Press Start 2P', 'Courier New', monospace;
+  --font-fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  
+  --pixel-border-width: 1.5px;
+  --pixel-radius: 4px;
+  --transition-speed: 0.15s;
+}
+
+/* Mobile Touch & Anti-Zoom Optimization (防止手機連點放大) */
+html, body {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input, select, textarea, a, .pixel-btn, .keypad-btn, .nav-tab-btn, .theme-card, .mascot-choice-card, .mascot-filter-btn, .chameleon-avatar-box {
+  touch-action: manipulation;
+}
+
+:root {
+  /* Default Keypad Screen Variables (預設深色螢光) */
+  --keypad-screen-bg: #0c140d;
+  --keypad-screen-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.85);
+  --keypad-screen-scanline: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+  --keypad-screen-formula: #3cb055;
+  --keypad-screen-currency: #42be5d;
+  --keypad-screen-val: #4af577;
+  --keypad-screen-val-glow: 0 0 8px rgba(74, 245, 119, 0.5);
+  --keypad-screen-val-shadow: none;
+}
+
+/* ==========================================================================
+   【淺色文雅風 (LIGHT & PARCHMENT THEMES)】
+   ========================================================================== */
+
+/* 1. 古籍莎草 (預設白底 - 復古羊皮紙) */
+[data-theme="retro-light"] {
+  --bg-main: #f5f4ed;
+  --bg-card: #ffffff;
+  --bg-card-alt: #eae8dc;
+  --bg-input: #ffffff;
+  --border-color: #2b2b2b;
+  --border-highlight: #5c5c5c;
+  --border-shadow: #141414;
+  
+  --text-main: #1f2328;
+  --text-muted: #57606a;
+  --text-dim: #8c959f;
+  
+  --primary: #1b7f3b;        /* 墨綠爬蟲 */
+  --primary-glow: rgba(27, 127, 59, 0.2);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #0969da;
+  --accent: #bc4c00;
+  --warning: #9a6700;
+  
+  --debit-color: #0969da;    /* 借方：沉穩藍 */
+  --credit-color: #cf222e;   /* 貸方：深赤紅 */
+  --balance-ok: #1a7f37;
+  --balance-err: #cf222e;
+  
+  --reptile-skin: #2da44e;
+  --reptile-eye: #e3b341;
+  --reptile-belly: #4ac26b;
+
+  --badge-bg: #e8e6d9;
+  --header-bg: #edece1;
+  --grid-line: rgba(0, 0, 0, 0.05);
+}
+
+/* 2. 初孵淡彩 (Hatchling Cream / 奶油暖沙) */
+[data-theme="hatchling-cream"] {
+  --bg-main: #faf6ee;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f1ebd9;
+  --bg-input: #ffffff;
+  --border-color: #5c4d3c;
+  --border-highlight: #8c7358;
+  --border-shadow: #2a2219;
+  
+  --text-main: #33261a;
+  --text-muted: #73614d;
+  --text-dim: #a6917b;
+  
+  --primary: #d48b28;        /* 奶油焦糖金 */
+  --primary-glow: rgba(212, 139, 40, 0.25);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #4a8275;      /* 鼠尾草灰青 */
+  --accent: #c45e3d;
+  --warning: #d97706;
+  
+  --debit-color: #2b6cb0;
+  --credit-color: #c53030;
+  --balance-ok: #2f855a;
+  --balance-err: #c53030;
+  
+  --reptile-skin: #e09f3e;
+  --reptile-eye: #3182ce;
+  --reptile-belly: #fff3c4;
+
+  --badge-bg: #f4ecda;
+  --header-bg: #f5eedb;
+  --grid-line: rgba(92, 77, 60, 0.06);
+}
+
+/* 3. 青苔石階 (Mossy Stone / 苔白草木) */
+[data-theme="mossy-stone"] {
+  --bg-main: #f0f4ef;
+  --bg-card: #ffffff;
+  --bg-card-alt: #e1eade;
+  --bg-input: #ffffff;
+  --border-color: #2d4030;
+  --border-highlight: #4d6951;
+  --border-shadow: #142016;
+  
+  --text-main: #18261b;
+  --text-muted: #4e6352;
+  --text-dim: #849c88;
+  
+  --primary: #2d7a46;        /* 苔原深綠 */
+  --primary-glow: rgba(45, 122, 70, 0.2);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #2b6cb0;
+  --accent: #b7791f;
+  --warning: #c05621;
+  
+  --debit-color: #2c5282;
+  --credit-color: #9b2c2c;
+  --balance-ok: #22543d;
+  --balance-err: #9b2c2c;
+  
+  --reptile-skin: #38a169;
+  --reptile-eye: #ecc94b;
+  --reptile-belly: #9ae6b4;
+
+  --badge-bg: #e1ede0;
+  --header-bg: #e6eee5;
+  --grid-line: rgba(45, 64, 48, 0.06);
+}
+
+/* 4. 朝霞沙漠 (Dawn Desert / 暖杏珊瑚) */
+[data-theme="dawn-desert"] {
+  --bg-main: #fcf4ee;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f5e4d5;
+  --bg-input: #ffffff;
+  --border-color: #5c3b31;
+  --border-highlight: #8c5d4f;
+  --border-shadow: #2c1a14;
+  
+  --text-main: #2b1812;
+  --text-muted: #734d40;
+  --text-dim: #a6796c;
+  
+  --primary: #c85a32;        /* 暖陽赤陶色 */
+  --primary-glow: rgba(200, 90, 50, 0.25);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #3182ce;
+  --accent: #d69e2e;
+  --warning: #dd6b20;
+  
+  --debit-color: #2b6cb0;
+  --credit-color: #c53030;
+  --balance-ok: #276749;
+  --balance-err: #9b2c2c;
+  
+  --reptile-skin: #dd6b20;
+  --reptile-eye: #319795;
+  --reptile-belly: #fed7d7;
+
+  --badge-bg: #f5e1d3;
+  --header-bg: #f8e8dc;
+  --grid-line: rgba(92, 59, 49, 0.06);
+}
+
+/* 5. 薄荷冰蜥 (Mint Ice / 復古掌機淡青) */
+[data-theme="mint-ice"] {
+  --bg-main: #eef7f4;
+  --bg-card: #ffffff;
+  --bg-card-alt: #dbeef9;
+  --bg-input: #ffffff;
+  --border-color: #24413b;
+  --border-highlight: #3c6e64;
+  --border-shadow: #122420;
+  
+  --text-main: #142924;
+  --text-muted: #41685e;
+  --text-dim: #799e95;
+  
+  --primary: #19876e;        /* 薄荷深青 */
+  --primary-glow: rgba(25, 135, 110, 0.2);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #2b6cb0;
+  --accent: #d69e2e;
+  --warning: #dd6b20;
+  
+  --debit-color: #234e52;
+  --credit-color: #9b2c2c;
+  --balance-ok: #19876e;
+  --balance-err: #9b2c2c;
+  
+  --reptile-skin: #319795;
+  --reptile-eye: #d69e2e;
+  --reptile-belly: #b2f5ea;
+
+  --badge-bg: #d9eee7;
+  --header-bg: #e2f1ec;
+  --grid-line: rgba(36, 65, 59, 0.06);
+}
+
+/* 6. 紫藤晨霧 (Wisteria Mist / 淺紫和紙) */
+[data-theme="wisteria-mist"] {
+  --bg-main: #f5f2f9;
+  --bg-card: #ffffff;
+  --bg-card-alt: #e9e3f3;
+  --bg-input: #ffffff;
+  --border-color: #3b2c4d;
+  --border-highlight: #644a82;
+  --border-shadow: #1a1224;
+  
+  --text-main: #241733;
+  --text-muted: #5e4775;
+  --text-dim: #947fa8;
+  
+  --primary: #6b46c1;        /* 優雅紫藤 */
+  --primary-glow: rgba(107, 70, 193, 0.2);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #3182ce;
+  --accent: #d69e2e;
+  --warning: #dd6b20;
+  
+  --debit-color: #4a5568;
+  --credit-color: #9b2c2c;
+  --balance-ok: #2f855a;
+  --balance-err: #9b2c2c;
+  
+  --reptile-skin: #805ad5;
+  --reptile-eye: #38b2ac;
+  --reptile-belly: #e9d8fd;
+
+  --badge-bg: #eae2f5;
+  --header-bg: #efe8f8;
+  --grid-line: rgba(59, 44, 77, 0.06);
+}
+
+/* 7. 小雞黃 (Chick Yellow / 雛鳥暖沙) */
+[data-theme="chick-yellow"] {
+  --bg-main: #fdf9e8;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8f0d0;
+  --bg-input: #ffffff;
+  --border-color: #5c4a24;
+  --border-highlight: #a6833a;
+  --border-shadow: #2b210c;
+  
+  --text-main: #2e220e;
+  --text-muted: #78603d;
+  --text-dim: #ad9674;
+  
+  --primary: #e29b00;        /* 萌雛暖黃 / 金黃蛋黃 */
+  --primary-glow: rgba(226, 155, 0, 0.28);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #3e828d;      /* 灰湖青 */
+  --accent: #e66737;         /* 暖橘紅 */
+  --warning: #d97706;
+  
+  --debit-color: #246fa3;    /* 借方：海軍青藍 */
+  --credit-color: #c73243;   /* 貸方：草莓赤紅 */
+  --balance-ok: #278a4e;
+  --balance-err: #c73243;
+  
+  --reptile-skin: #f2b318;
+  --reptile-eye: #1d6896;
+  --reptile-belly: #fff5c4;
+
+  --badge-bg: #f5ebc6;
+  --header-bg: #faefcd;
+  --grid-line: rgba(92, 74, 36, 0.06);
+}
+
+/* 8. 復古粉 (Retro Pink / 櫻咲落霞) */
+[data-theme="retro-pink"] {
+  --bg-main: #fbf2f4;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f4e2e7;
+  --bg-input: #ffffff;
+  --border-color: #593a45;
+  --border-highlight: #9e6b7d;
+  --border-shadow: #28161d;
+  
+  --text-main: #2c1b22;
+  --text-muted: #735460;
+  --text-dim: #a68491;
+  
+  --primary: #c9406f;        /* 復古草莓粉 / 暮櫻粉 */
+  --primary-glow: rgba(201, 64, 111, 0.28);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #3b7e8c;      /* 復古薄荷灰青 */
+  --accent: #9b4d8d;         /* 紫藤莓果 */
+  --warning: #c2652b;
+  
+  --debit-color: #2a69ab;    /* 借方：經典深藍 */
+  --credit-color: #c4294b;   /* 貸方：深赤櫻 */
+  --balance-ok: #288554;
+  --balance-err: #c4294b;
+  
+  --reptile-skin: #d95786;
+  --reptile-eye: #ffe600;
+  --reptile-belly: #fcdde8;
+
+  --badge-bg: #f0d8df;
+  --header-bg: #f5dfe5;
+  --grid-line: rgba(89, 58, 69, 0.06);
+}
+
+/* 9. 水墨黑白 (Monochrome B&W / 經典黑白配) */
+[data-theme="monochrome-bw"] {
+  --bg-main: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-card-alt: #eaeaea;
+  --bg-input: #ffffff;
+  --border-color: #111111;
+  --border-highlight: #444444;
+  --border-shadow: #000000;
+  
+  --text-main: #111111;
+  --text-muted: #555555;
+  --text-dim: #888888;
+  
+  --primary: #111111;        /* 極致純黑 */
+  --primary-glow: rgba(0, 0, 0, 0.25);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #333333;      /* 沉穩石墨黑 */
+  --accent: #222222;         /* 墨黑點綴 */
+  --warning: #444444;
+  
+  --debit-color: #111111;    /* 借方：純黑印記 */
+  --credit-color: #555555;   /* 貸方：石墨灰印 */
+  --balance-ok: #111111;
+  --balance-err: #d32f2f;
+  
+  --reptile-skin: #222222;
+  --reptile-eye: #ffffff;
+  --reptile-belly: #e0e0e0;
+
+  --badge-bg: #e5e5e5;
+  --header-bg: #eeeeee;
+  --grid-line: rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   【深色酷炫風 (DARK & CYBER THEMES)】
+   ========================================================================== */
+
+/* 7. 黑曜巨蜥 (預設黑底) */
+[data-theme="obsidian-dark"] {
+  --bg-main: #0c0f12;
+  --bg-card: #151a21;
+  --bg-card-alt: #1c232d;
+  --bg-input: #0a0d10;
+  --border-color: #2e3b4e;
+  --border-highlight: #445672;
+  --border-shadow: #050709;
+  
+  --text-main: #e6edf3;
+  --text-muted: #8b949e;
+  --text-dim: #545d68;
+  
+  --primary: #39d353;        /* 翡翠綠蜥 */
+  --primary-glow: rgba(57, 211, 83, 0.25);
+  --primary-contrast: #0c0f12;
+  
+  --secondary: #58a6ff;      /* 藍舌蜥青 */
+  --accent: #f0883e;         /* 守宮琥珀 */
+  --warning: #d29922;
+  
+  --debit-color: #58a6ff;    /* 借方：青藍 */
+  --credit-color: #f778ba;   /* 貸方：粉紫 */
+  --balance-ok: #39d353;
+  --balance-err: #ff5555;
+  
+  --reptile-skin: #2ea043;
+  --reptile-eye: #ffea00;
+  --reptile-belly: #56d364;
+
+  --badge-bg: #21262d;
+  --header-bg: #11151c;
+  --grid-line: rgba(255, 255, 255, 0.05);
+}
+
+/* 8. 翡翠變色龍 */
+[data-theme="chameleon-green"] {
+  --bg-main: #06190f;
+  --bg-card: #0c2b1b;
+  --bg-card-alt: #133d27;
+  --bg-input: #04120a;
+  --border-color: #1b5e3b;
+  --border-highlight: #2be07d;
+  --border-shadow: #020805;
+  
+  --text-main: #dcffe4;
+  --text-muted: #7ecb98;
+  --text-dim: #43885b;
+  
+  --primary: #00ff73;
+  --primary-glow: rgba(0, 255, 115, 0.3);
+  --primary-contrast: #04140b;
+  
+  --secondary: #00e1d9;
+  --accent: #ffd000;
+  --warning: #ffb700;
+  
+  --debit-color: #00f0ff;
+  --credit-color: #ff3377;
+  --balance-ok: #00ff73;
+  --balance-err: #ff3333;
+  
+  --reptile-skin: #00ff73;
+  --reptile-eye: #ffe600;
+  --reptile-belly: #80ffba;
+
+  --badge-bg: #103823;
+  --header-bg: #092114;
+  --grid-line: rgba(0, 255, 115, 0.07);
+}
+
+/* 9. 沙漠守宮 */
+[data-theme="desert-gecko"] {
+  --bg-main: #1f170f;
+  --bg-card: #302419;
+  --bg-card-alt: #443425;
+  --bg-input: #17110a;
+  --border-color: #6a523a;
+  --border-highlight: #e59d43;
+  --border-shadow: #0d0a06;
+  
+  --text-main: #fef4e8;
+  --text-muted: #c9ab8d;
+  --text-dim: #8c7158;
+  
+  --primary: #f5a623;
+  --primary-glow: rgba(245, 166, 35, 0.3);
+  --primary-contrast: #1f170f;
+  
+  --secondary: #48c78e;
+  --accent: #e76f51;
+  --warning: #f4a261;
+  
+  --debit-color: #48c78e;
+  --credit-color: #e76f51;
+  --balance-ok: #f5a623;
+  --balance-err: #d62828;
+  
+  --reptile-skin: #f5a623;
+  --reptile-eye: #00ffff;
+  --reptile-belly: #fcd385;
+
+  --badge-bg: #403022;
+  --header-bg: #291e14;
+  --grid-line: rgba(245, 166, 35, 0.08);
+}
+
+/* 10. 霓虹毒蛙 */
+[data-theme="poison-frog"] {
+  --bg-main: #12091f;
+  --bg-card: #211238;
+  --bg-card-alt: #2f1950;
+  --bg-input: #0a0413;
+  --border-color: #55278c;
+  --border-highlight: #b645ff;
+  --border-shadow: #05020a;
+  
+  --text-main: #f7edff;
+  --text-muted: #b79cd4;
+  --text-dim: #795d97;
+  
+  --primary: #00ffff;
+  --primary-glow: rgba(0, 255, 255, 0.3);
+  --primary-contrast: #12091f;
+  
+  --secondary: #ff007f;
+  --accent: #ffe600;
+  --warning: #ff7700;
+  
+  --debit-color: #00ffff;
+  --credit-color: #ff007f;
+  --balance-ok: #00ffaa;
+  --balance-err: #ff0055;
+  
+  --reptile-skin: #00ffff;
+  --reptile-eye: #ff007f;
+  --reptile-belly: #99ffff;
+
+  --badge-bg: #2d174d;
+  --header-bg: #1a0c2e;
+  --grid-line: rgba(182, 69, 255, 0.08);
+}
+
+/* 11. 熔岩巨蜥 */
+[data-theme="magma-lizard"] {
+  --bg-main: #180d0d;
+  --bg-card: #281515;
+  --bg-card-alt: #3c2020;
+  --bg-input: #100808;
+  --border-color: #632323;
+  --border-highlight: #ff4747;
+  --border-shadow: #0b0505;
+  
+  --text-main: #ffe8e8;
+  --text-muted: #caa0a0;
+  --text-dim: #8b6060;
+  
+  --primary: #ff4d2e;
+  --primary-glow: rgba(255, 77, 46, 0.3);
+  --primary-contrast: #180d0d;
+  
+  --secondary: #ffa600;
+  --accent: #ffd000;
+  --warning: #ff7b00;
+  
+  --debit-color: #ffa600;
+  --credit-color: #ff4d4d;
+  --balance-ok: #00e676;
+  --balance-err: #ff1744;
+  
+  --reptile-skin: #ff4d2e;
+  --reptile-eye: #ffd000;
+  --reptile-belly: #ff856e;
+
+  --badge-bg: #381c1c;
+  --header-bg: #221010;
+  --grid-line: rgba(255, 77, 46, 0.08);
+}
+
+/* ==========================================================================
+   【節慶限定像素風 (FESTIVE HOLIDAY THEMES)】
+   ========================================================================== */
+
+/* 14. 萬聖南瓜夜 (Halloween Pumpkin - 深色魅紫螢光橙) */
+[data-theme="halloween"] {
+  --bg-main: #130a22;
+  --bg-card: #1f1136;
+  --bg-card-alt: #2c184c;
+  --bg-input: #0e0719;
+  --border-color: #55288a;
+  --border-highlight: #ff7518;
+  --border-shadow: #08030f;
+  
+  --text-main: #f5edff;
+  --text-muted: #b9a2df;
+  --text-dim: #7f5aa8;
+  
+  --primary: #ff7518;        /* 萬聖南瓜澄橘 */
+  --primary-glow: rgba(255, 117, 24, 0.35);
+  --primary-contrast: #130a22;
+  
+  --secondary: #b388ff;      /* 幽冥幻紫 */
+  --accent: #76ff03;         /* 毒蘋果螢光綠 */
+  --warning: #ffab00;
+  
+  --debit-color: #00e5ff;    /* 幽光青 */
+  --credit-color: #ff3d71;   /* 魔法桃紅 */
+  --balance-ok: #76ff03;
+  --balance-err: #ff1744;
+  
+  --reptile-skin: #ff7518;
+  --reptile-eye: #76ff03;
+  --reptile-belly: #ffa726;
+
+  --badge-bg: #321657;
+  --header-bg: #190c2e;
+  --grid-line: rgba(255, 117, 24, 0.08);
+}
+
+/* 15. 聖誕雪松 (Christmas Pine & Holly - 幽邃松夜雪影赤紅) */
+[data-theme="christmas"] {
+  --bg-main: #091710;        /* 沉靜冷杉松夜黑 */
+  --bg-card: #12281d;        /* 溫潤深松木翠綠 */
+  --bg-card-alt: #1a3829;    /* 冷杉針葉深翠 */
+  --bg-input: #07130d;       /* 沉寂松夜底色 */
+  --border-color: #27523a;    /* 經典常青冬青綠框 */
+  --border-highlight: #ef4444; /* 鮮艷聖誕莓果紅 */
+  --border-shadow: #030805;
+  
+  --text-main: #f0fdf4;      /* 醒目雪松霜白（高對比超清晰） */
+  --text-muted: #bbf7d0;     /* 柔和亮霜綠（極易閱讀不刺眼） */
+  --text-dim: #74ad8f;       /* 次要備註青翠 */
+  
+  --primary: #ef4444;        /* 經典聖誕正紅 */
+  --primary-glow: rgba(239, 68, 68, 0.35);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #22c55e;      /* 常青松針亮綠 */
+  --accent: #fbbf24;         /* 閃耀聖誕暖金星 */
+  --warning: #f59e0b;
+  
+  --debit-color: #38bdf8;    /* 晴雪晶藍 */
+  --credit-color: #f87171;   /* 聖誕鮮紅 */
+  --balance-ok: #4ade80;     /* 翠綠平衡 */
+  --balance-err: #f87171;
+  
+  --reptile-skin: #22c55e;
+  --reptile-eye: #fbbf24;
+  --reptile-belly: #bbf7d0;
+
+  --badge-bg: #183e2a;
+  --header-bg: #0b1f15;
+  --grid-line: rgba(239, 68, 68, 0.08);
+}
+
+/* 16. 新春吉慶 (Spring Festival - 華貴宮廷金赤黑絳) */
+[data-theme="spring-festival"] {
+  --bg-main: #140507;        /* 宮廷深絳夜色黑 */
+  --bg-card: #230b10;        /* 祥瑞深朱砂漆紅 */
+  --bg-card-alt: #361219;    /* 迎春暖赤紅金 */
+  --bg-input: #0f0305;       /* 沉靜暗絳底色 */
+  --border-color: #5c1c24;    /* 宮廷金赤描邊框 */
+  --border-highlight: #fbbf24; /* 富貴璀璨吉金 */
+  --border-shadow: #060102;
+  
+  --text-main: #fff5eb;      /* 燈火暖絹玉白（高對比超清晰） */
+  --text-muted: #fcd34d;     /* 華麗澄澈吉金（極易閱讀醒目） */
+  --text-dim: #c07d83;       /* 次要備註桃紅 */
+  
+  --primary: #ff384c;        /* 鴻運大吉正紅 */
+  --primary-glow: rgba(255, 56, 76, 0.35);
+  --primary-contrast: #ffffff;
+  
+  --secondary: #fbbf24;      /* 純金元寶璨金 */
+  --accent: #34d399;         /* 翡翠迎春吉祥 */
+  --warning: #f59e0b;
+  
+  --debit-color: #fbbf24;    /* 璀璨金元寶 */
+  --credit-color: #ff4d61;   /* 大紅包赤紅 */
+  --balance-ok: #34d399;     /* 翡翠綠 */
+  --balance-err: #ff4d61;
+  
+  --reptile-skin: #ff384c;
+  --reptile-eye: #fbbf24;
+  --reptile-belly: #ffe4e6;
+
+  --badge-bg: #3d1219;
+  --header-bg: #1d070b;
+  --grid-line: rgba(251, 191, 36, 0.08);
+}
+
+/* 17. 中秋月夜 (Mid-Autumn Moonlit Night - 深海群青滿月夜) */
+[data-theme="mid-autumn"] {
+  --bg-main: #0a1124;
+  --bg-card: #131d3b;
+  --bg-card-alt: #1c2b54;
+  --bg-input: #060b17;
+  --border-color: #2b3d73;
+  --border-highlight: #fbc02d;
+  --border-shadow: #03060d;
+  
+  --text-main: #eef3ff;
+  --text-muted: #9bb2e0;
+  --text-dim: #6279ad;
+  
+  --primary: #fbc02d;        /* 滿月晶金 */
+  --primary-glow: rgba(251, 192, 45, 0.35);
+  --primary-contrast: #0a1124;
+  
+  --secondary: #81d4fa;      /* 澄澈夜光藍 */
+  --accent: #ff9800;         /* 桂花金橙 */
+  --warning: #ffa000;
+  
+  --debit-color: #81d4fa;    /* 月泉水藍 */
+  --credit-color: #f48fb1;   /* 玉兔粉雲 */
+  --balance-ok: #fbc02d;
+  --balance-err: #ff5252;
+  
+  --reptile-skin: #3f51b5;
+  --reptile-eye: #fbc02d;
+  --reptile-belly: #ffecb3;
+
+  --badge-bg: #1c2a52;
+  --header-bg: #0e172e;
+  --grid-line: rgba(251, 192, 45, 0.07);
+}
+
+/* ==========================================================================
+   【小鍵盤螢幕深淺主題自動適配 (KEYPAD SCREEN THEME ADAPTATION)】
+   ========================================================================== */
+
+/* 1. 淺色主題：淺色復古液晶螢幕 (Light LCD Themes) */
+[data-theme="retro-light"],
+[data-theme="hatchling-cream"],
+[data-theme="mossy-stone"],
+[data-theme="dawn-desert"],
+[data-theme="mint-ice"],
+[data-theme="wisteria-mist"],
+[data-theme="chick-yellow"],
+[data-theme="retro-pink"],
+[data-theme="monochrome-bw"] {
+  --keypad-screen-bg: #edf3e7;
+  --keypad-screen-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.14);
+  --keypad-screen-scanline: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.05) 50%);
+  --keypad-screen-formula: #556e58;
+  --keypad-screen-currency: #28542e;
+  --keypad-screen-val: #122415;
+  --keypad-screen-val-glow: none;
+  --keypad-screen-val-shadow: 1px 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* 淺色微調：依照紙質/淡彩特色微調螢幕色底與墨色 */
+[data-theme="monochrome-bw"] {
+  --keypad-screen-bg: #ececec;
+  --keypad-screen-val: #000000;
+  --keypad-screen-currency: #222222;
+  --keypad-screen-formula: #555555;
+  --keypad-screen-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="chick-yellow"] {
+  --keypad-screen-bg: #fdf5d8;
+  --keypad-screen-val: #32240e;
+  --keypad-screen-currency: #9e6800;
+  --keypad-screen-formula: #7a6344;
+}
+
+[data-theme="retro-pink"] {
+  --keypad-screen-bg: #fdedf1;
+  --keypad-screen-val: #331520;
+  --keypad-screen-currency: #a82e5d;
+  --keypad-screen-formula: #784b5c;
+}
+
+[data-theme="hatchling-cream"] {
+  --keypad-screen-bg: #f5eedc;
+  --keypad-screen-val: #2b1f13;
+  --keypad-screen-currency: #8c5817;
+  --keypad-screen-formula: #6e5944;
+}
+
+[data-theme="mossy-stone"] {
+  --keypad-screen-bg: #e3ede1;
+  --keypad-screen-val: #142918;
+  --keypad-screen-currency: #1f6b2d;
+  --keypad-screen-formula: #4d6951;
+}
+
+[data-theme="mint-ice"] {
+  --keypad-screen-bg: #e0f2f0;
+  --keypad-screen-val: #0c2624;
+  --keypad-screen-currency: #126661;
+  --keypad-screen-formula: #4a7370;
+}
+
+[data-theme="wisteria-mist"] {
+  --keypad-screen-bg: #ece6f5;
+  --keypad-screen-val: #24182e;
+  --keypad-screen-currency: #5e3b8a;
+  --keypad-screen-formula: #645675;
+}
+
+[data-theme="dawn-desert"] {
+  --keypad-screen-bg: #f5eae0;
+  --keypad-screen-val: #2e1a12;
+  --keypad-screen-currency: #8a3f1d;
+  --keypad-screen-formula: #705448;
+}
+
+/* 2. 深色主題：深色復古螢光螢幕 (Dark Cyber LCD/CRT Themes) */
+[data-theme="obsidian-dark"],
+[data-theme="chameleon-green"],
+[data-theme="desert-gecko"],
+[data-theme="poison-frog"],
+[data-theme="magma-lizard"] {
+  --keypad-screen-bg: #0b120c;
+  --keypad-screen-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.85);
+  --keypad-screen-scanline: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+  --keypad-screen-formula: #3cb055;
+  --keypad-screen-currency: #42be5d;
+  --keypad-screen-val: #4af577;
+  --keypad-screen-val-glow: 0 0 8px rgba(74, 245, 119, 0.5);
+  --keypad-screen-val-shadow: none;
+}
+
+/* 深色微調：依照主題專屬賽博霓虹發光色 */
+[data-theme="obsidian-dark"] {
+  --keypad-screen-bg: #0c140d;
+  --keypad-screen-val: #39d353;
+  --keypad-screen-currency: #56d364;
+  --keypad-screen-formula: #2ea043;
+  --keypad-screen-val-glow: 0 0 8px rgba(57, 211, 83, 0.5);
+}
+
+[data-theme="chameleon-green"] {
+  --keypad-screen-bg: #04140b;
+  --keypad-screen-val: #00ff73;
+  --keypad-screen-currency: #00e1d9;
+  --keypad-screen-formula: #2be07d;
+  --keypad-screen-val-glow: 0 0 10px rgba(0, 255, 115, 0.55);
+}
+
+[data-theme="desert-gecko"] {
+  --keypad-screen-bg: #18110a;
+  --keypad-screen-val: #f5a623;
+  --keypad-screen-currency: #e59d43;
+  --keypad-screen-formula: #c9ab8d;
+  --keypad-screen-val-glow: 0 0 8px rgba(245, 166, 35, 0.5);
+}
+
+[data-theme="poison-frog"] {
+  --keypad-screen-bg: #0c0618;
+  --keypad-screen-val: #00ffff;
+  --keypad-screen-currency: #ff007f;
+  --keypad-screen-formula: #b645ff;
+  --keypad-screen-val-glow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+[data-theme="magma-lizard"] {
+  --keypad-screen-bg: #180909;
+  --keypad-screen-val: #ff4d2e;
+  --keypad-screen-currency: #ffa600;
+  --keypad-screen-formula: #ff7b00;
+  --keypad-screen-val-glow: 0 0 8px rgba(255, 77, 46, 0.55);
+}
+
+/* 深色微調：節慶深色霓虹小鍵盤 (Dark Cyber LCD Screens) */
+[data-theme="halloween"] {
+  --keypad-screen-bg: #160829;
+  --keypad-screen-val: #ff7518;
+  --keypad-screen-currency: #76ff03;
+  --keypad-screen-formula: #b388ff;
+  --keypad-screen-val-glow: 0 0 10px rgba(255, 117, 24, 0.65);
+  --keypad-screen-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+[data-theme="mid-autumn"] {
+  --keypad-screen-bg: #080f24;
+  --keypad-screen-val: #fbc02d;
+  --keypad-screen-currency: #81d4fa;
+  --keypad-screen-formula: #ff9800;
+  --keypad-screen-val-glow: 0 0 10px rgba(251, 192, 45, 0.65);
+  --keypad-screen-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+/* 深色微調：節慶深色霓虹小鍵盤 (Dark Festive LCD Displays) */
+[data-theme="christmas"] {
+  --keypad-screen-bg: #06150d;
+  --keypad-screen-val: #4ade80;
+  --keypad-screen-currency: #f87171;
+  --keypad-screen-formula: #86efac;
+  --keypad-screen-val-glow: 0 0 10px rgba(74, 222, 128, 0.6);
+  --keypad-screen-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.85);
+  --keypad-screen-scanline: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+}
+
+[data-theme="spring-festival"] {
+  --keypad-screen-bg: #150406;
+  --keypad-screen-val: #fbbf24;
+  --keypad-screen-currency: #ff4d61;
+  --keypad-screen-formula: #fcd34d;
+  --keypad-screen-val-glow: 0 0 10px rgba(251, 191, 36, 0.65);
+  --keypad-screen-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.85);
+  --keypad-screen-scanline: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+}
+
+/* ==========================================
+   RESET & BASE STYLING
+   ========================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  image-rendering: pixelated;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-pixel-body), var(--font-fallback);
+  font-size: 18px;
+  line-height: 1.4;
+  min-height: 100vh;
+  position: relative;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+}
+
+/* ==========================================
+   RETRO CRT SCANLINE OVERLAY (TOGGLEABLE)
+   ========================================== */
+body.crt-enabled::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 99999;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* ==========================================
+   PIXEL BOX SHADOWS & BORDERS
+   ========================================== */
+.pixel-box {
+  background-color: var(--bg-card);
+  border: var(--pixel-border-width) solid var(--border-color);
+  border-radius: var(--pixel-radius);
+  box-shadow: 1.5px 1.5px 0px 0px var(--border-shadow);
+  position: relative;
+}
+
+.pixel-box-sm {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--pixel-radius);
+  box-shadow: 1px 1px 0px 0px var(--border-shadow);
+}
+
+.pixel-box-highlight {
+  border-color: var(--primary);
+  box-shadow: 
+    1.5px 1.5px 0px 0px var(--border-shadow),
+    0 0 8px var(--primary-glow);
+}
+
+/* ==========================================
+   PIXEL BUTTONS (簡約緊湊，文字與邊框比例平衡)
+   ========================================== */
+.pixel-btn {
+  font-family: var(--font-pixel-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 11px;
+  background-color: var(--bg-card-alt);
+  color: var(--text-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--pixel-radius);
+  box-shadow: 1.5px 1.5px 0px 0px var(--border-shadow);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  user-select: none;
+  letter-spacing: 0.2px;
+  line-height: 1.25;
+  transition: transform 0.05s ease, background-color 0.1s, box-shadow 0.1s;
+}
+
+.pixel-btn:hover {
+  background-color: var(--border-highlight);
+  color: #ffffff;
+}
+
+.pixel-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0.5px 0.5px 0px 0px var(--border-shadow);
+}
+
+.pixel-btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-contrast);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.pixel-btn-primary:hover {
+  background-color: var(--primary);
+  filter: brightness(1.12);
+  color: var(--primary-contrast);
+  box-shadow: 
+    1.5px 1.5px 0px 0px var(--border-shadow),
+    0 0 6px var(--primary-glow);
+}
+
+.pixel-btn-secondary {
+  background-color: var(--secondary);
+  color: #ffffff;
+  border-color: var(--secondary);
+}
+
+.pixel-btn-accent {
+  background-color: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.pixel-btn-danger {
+  background-color: var(--balance-err);
+  color: #ffffff;
+  border-color: var(--balance-err);
+}
+
+.pixel-btn-sm {
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-width: 1px;
+  box-shadow: 1px 1px 0px 0px var(--border-shadow);
+  gap: 4px;
+}
+
+.pixel-btn-icon {
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+/* ==========================================
+   INPUTS & SELECTS
+   ========================================== */
+.pixel-input,
+.pixel-select {
+  font-family: var(--font-pixel-body), var(--font-fallback);
+  font-size: 15px;
+  padding: 6px 10px;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--pixel-radius);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pixel-input:focus,
+.pixel-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.pixel-select option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  padding: 6px;
+}
+
+/* ==========================================
+   BADGES & CHIPS
+   ========================================== */
+.pixel-badge {
+  font-family: var(--font-pixel-heading);
+  font-size: 9px;
+  padding: 3px 6px;
+  display: inline-block;
+  border: 1px solid var(--border-color);
+  background-color: var(--badge-bg);
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.badge-asset { background-color: #1e3a5f; color: #79c0ff; border-color: #388bfd; }
+.badge-liability { background-color: #4a2123; color: #ff7b72; border-color: #f85149; }
+.badge-equity { background-color: #3c2f15; color: #f2cc60; border-color: #d29922; }
+.badge-revenue { background-color: #1a3c28; color: #7ee787; border-color: #3fb950; }
+.badge-expense { background-color: #442345; color: #d2a8ff; border-color: #a371f7; }
+
+.badge-debit {
+  background-color: var(--debit-color);
+  color: #fff;
+  font-weight: bold;
+}
+
+.badge-credit {
+  background-color: var(--credit-color);
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-highlight);
+  border: 2px solid var(--border-shadow);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
